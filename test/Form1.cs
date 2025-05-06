@@ -50,60 +50,77 @@ namespace test
         }
 
         public string checkEmpty()
+{
+    string errors = "";
+
+    // Load the workbook and sheet
+    book = new Workbook();
+    book.LoadFromFile(@"C:\Users\ACT-STUDENT\Desktop\ARDIMER\Book.xlsx");
+    Worksheet sheet = book.Worksheets[0];
+
+    // Loop through the rows to check for existing usernames and emails
+    foreach (Row row in sheet.Rows)
+    {
+        string existingUsername = sheet.Range[row.RowIndex, 6].Text; // Column 6 for username
+        string existingEmail = sheet.Range[row.RowIndex, 9].Text;    // Column 9 for email
+
+        if (existingUsername == txtUsername.Text)
         {
-
-
-            string errors = "";
-
-            foreach (Control C in Controls)
-            {
-                if (C is TextBox && string.IsNullOrEmpty(C.Text))
-                {
-                    errors += $"{C.Name} is empty.\n";
-                }
-
-                if (C is ComboBox comboBox && comboBox.SelectedIndex == -1)
-                {
-                    errors += $"{C.Name} is not selected.\n";
-                }
-
-                if (C is RadioButton radioButton)
-                {
-                    if (radioButton.Name == "radMale" || radioButton.Name == "radFemale")
-                    {
-                        if (!radMale.Checked && !radFemale.Checked)
-                        {
-                            errors += "Gender is not selected.\n";
-                        }
-                    }
-                }
-
-                if (C is CheckBox checkBox)
-                {
-                    if ((checkBox.Name == "chkVolleyball" || checkBox.Name == "chkBadminton" || checkBox.Name == "chkBasketball") && !chkVolleyball.Checked && !chkBadminton.Checked && !chkBasketball.Checked)
-                    {
-                        errors += "At least one hobby must be selected (Volleyball, Badminton, or Basketball).\n";
-                    }
-
-                    if (checkBox.Name == "chkTerms" && !checkBox.Checked)
-                    {
-                        errors += "Terms & Conditions are not agreed.\n";
-                    }
-                }
-            }
-
-            // Age validation
-            if (numAge.Value <= 0)
-            {
-                errors += "Age must be a valid number.\n";
-            }
-
-            return errors;
-
-
-
-
+            errors += "Username is already taken.\n";
         }
+
+        if (existingEmail == txtEmail.Text)
+        {
+            errors += "Email is already registered.\n";
+        }
+    }
+
+    // Check if any TextBox is empty
+    foreach (Control C in Controls)
+    {
+        if (C is TextBox && string.IsNullOrEmpty(C.Text))
+        {
+            errors += $"{C.Name} is empty.\n";
+        }
+
+        if (C is ComboBox comboBox && comboBox.SelectedIndex == -1)
+        {
+            errors += $"{C.Name} is not selected.\n";
+        }
+
+        if (C is RadioButton radioButton)
+        {
+            if (radioButton.Name == "radMale" || radioButton.Name == "radFemale")
+            {
+                if (!radMale.Checked && !radFemale.Checked)
+                {
+                    errors += "Gender is not selected.\n";
+                }
+            }
+        }
+
+        if (C is CheckBox checkBox)
+        {
+            if ((checkBox.Name == "chkVolleyball" || checkBox.Name == "chkBadminton" || checkBox.Name == "chkBasketball") && !chkVolleyball.Checked && !chkBadminton.Checked && !chkBasketball.Checked)
+            {
+                errors += "At least one hobby must be selected (Volleyball, Badminton, or Basketball).\n";
+            }
+
+            if (checkBox.Name == "chkTerms" && !checkBox.Checked)
+            {
+                errors += "Terms & Conditions are not agreed.\n";
+            }
+        }
+    }
+
+    // Age validation
+    if (numAge.Value <= 0)
+    {
+        errors += "Age must be a valid number.\n";
+    }
+
+    return errors;
+}
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
